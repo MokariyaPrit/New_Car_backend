@@ -76,7 +76,7 @@ async requestDrive(createDto: CreateTestDriveDto, user: User) {
 }
 
 async updateStatus(id: string, status: TestDriveStatus) {
-  const testDrive = await this.testDriveRepo.findOne({ where: { id } });
+  const testDrive = await this.testDriveRepo.findOne({ where: { id: String(id) } });
   if (!testDrive) throw new NotFoundException('Test Drive not found');
 
   testDrive.status = status;
@@ -117,5 +117,20 @@ async bookTestDrive(carId: number, user: User, date: Date) {
   });
 
   return this.testDriveRepo.save(testDrive);
+}
+
+async updateTestDriveStatus(id: number, status: 'accepted' | 'rejected') {
+const testDrive = await this.testDriveRepo.findOne({ where: { id: id.toString() } });
+  if (!testDrive) throw new NotFoundException('Test drive not found');
+
+  testDrive.status = status as TestDriveStatus;
+  return this.testDriveRepo.save(testDrive);
+}
+
+async getAllTestDrives() {
+  return this.testDriveRepo.find({
+    relations: ['car', 'user'],
+    order: { date: 'DESC' },
+  });
 }
 }

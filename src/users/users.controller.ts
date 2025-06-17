@@ -1,10 +1,40 @@
 // src/users/users.controller.ts
-import { Controller, Get, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Req, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/roles.enum';
+import { UpdateRoleDto } from './dto/update-role.dto';
+import { UsersService } from './users.service';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { User } from './entities/user.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
+ constructor(private readonly usersService: UsersService) {}
+
+ // Get current user profile
+  @UseGuards(JwtAuthGuard)
   @Get('me')
-  getProfile(@Req() req: any) {
-    return req.user;
+  getProfile(@CurrentUser() user: User) {
+    return user;
   }
+
+  // Only SuperAdmin can update other users' roles
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.SuperAdmin)
+  @Patch(':id/role')
+  updateUserRole(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateRoleDto: UpdateRoleDto
+  ) {
+    return this.usersService.updateUserRole(id, updateRoleDto.role);
+  }
+// @UseGuards(AuthGuard, RolesGuard)
+// @Roles(Role.SuperAdmin)
+// @Get()
+// findAll() {
+//   return this.usersService.findAllUsers();
+// }
 }

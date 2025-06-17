@@ -47,29 +47,6 @@ create(
 }
 
 
-@Patch(':id/approve')
-@Roles(Role.Manager, Role.Admin)
-approveTestDrive(@Param('id') id: string) {
-  return this.testDriveService.updateStatus(id, TestDriveStatus.Accepted);
-}
-
-@Patch(':id/reject')
-@Roles(Role.Manager, Role.Admin)
-rejectTestDrive(@Param('id') id: string) {
-  return this.testDriveService.updateStatus(id, TestDriveStatus.Rejected);
-}
-
-@Get()
-@UseGuards(AuthGuard, RolesGuard)
-@Roles(Role.User, Role.Manager, Role.Admin)
-getAllTestDrives(
-  @Query('status') status: TestDriveStatus,
-  @CurrentUser() user: User,
-) {
-  return this.testDriveService.getAll(status, user);
-}
-
-
 @Post(':carId')
 @UseGuards(AuthGuard, RolesGuard)
 @Roles(Role.User)
@@ -79,5 +56,26 @@ bookTestDrive(
   @Body() body: { date: string }, // ISO date string
 ) {
   return this.testDriveService.bookTestDrive(carId, user, new Date(body.date));
+}
+
+@Patch(':id/approve')
+@UseGuards(AuthGuard, RolesGuard)
+@Roles(Role.Manager, Role.Admin)
+approveTestDrive(@Param('id', ParseIntPipe) id: number) {
+  return this.testDriveService.updateTestDriveStatus(id, 'accepted');
+}
+
+@Patch(':id/reject')
+@UseGuards(AuthGuard, RolesGuard)
+@Roles(Role.Manager, Role.Admin)
+rejectTestDrive(@Param('id', ParseIntPipe) id: number) {
+  return this.testDriveService.updateTestDriveStatus(id, 'rejected');
+}
+
+@Get()
+@UseGuards(AuthGuard, RolesGuard)
+@Roles(Role.Manager, Role.Admin)
+getAllTestDrives() {
+  return this.testDriveService.getAllTestDrives();
 }
 }
