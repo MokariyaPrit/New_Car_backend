@@ -1,0 +1,22 @@
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // Swagger Config
+  const config = new DocumentBuilder()
+    .setTitle('Car Trade App API')
+    .setDescription('API documentation for the Car Trade Application')
+    .setVersion('1.0')
+    .addBearerAuth() // For JWT
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document); // accessible at /api
+
+  await app.listen(3000);
+  console.log('🚀 Server is running on http://localhost:3000');
+}
+bootstrap();
