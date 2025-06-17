@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity()
 export class Car {
@@ -21,12 +21,12 @@ export class Car {
   brand: string;
 
   @Column()
-  price: number;
+  description: string;
 
   @Column()
   imageUrl: string;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.cars)
   manager: User;
 
   @CreateDateColumn()
@@ -34,4 +34,5 @@ export class Car {
 
   @UpdateDateColumn()
   updatedAt: Date;
+  testDrives: any;
 }

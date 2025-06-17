@@ -10,16 +10,16 @@ import { User } from '../users/entities/user.entity';
 export class CarsService {
   constructor(
     @InjectRepository(Car)
-    private carRepo: Repository<Car>,
+    private carRepository: Repository<Car>,
   ) {}
 
-  async create(dto: CreateCarDto, manager: User) {
-    const car = this.carRepo.create({ ...dto, manager });
-    return this.carRepo.save(car);
-  }
+async create(createCarDto: CreateCarDto, manager: User) {
+  const car = this.carRepository.create({ ...createCarDto, manager });
+  return this.carRepository.save(car);
+}
 
   async findAllByManager(managerId: string) {
-    return this.carRepo.find({
+    return this.carRepository.find({
       where: { manager: { id: managerId } },
       relations: ['manager'],
     });

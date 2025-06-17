@@ -10,17 +10,18 @@ import { Role } from 'src/common/enums/roles.enum';
 @Controller('cars')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class CarsController {
-  constructor(private readonly carsService: CarsService) {}
+  constructor(private readonly carService: CarsService) {}
 
-  @Post()
-  @Roles(Role.Manager)
-  create(@Body() dto: CreateCarDto, @Req() req: any) {
-    return this.carsService.create(dto, req.user);
-  }
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.Manager)
+@Post()
+createCar(@Body() dto: CreateCarDto, @Req() req: any) {
+  return this.carService.create(dto, req.user);
+}
 
   @Get('my')
   @Roles(Role.Manager)
   getMyCars(@Req() req: any) {
-    return this.carsService.findAllByManager(req.user.id);
+    return this.carService.findAllByManager(req.user.id);
   }
 }

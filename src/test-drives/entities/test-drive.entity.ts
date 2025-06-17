@@ -1,28 +1,38 @@
-// src/test-drive/entities/test-drive.entity.ts
+// src/test-drives/entities/test-drive.entity.ts
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
   CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
-import { Car } from '../../cars/entities/car.entity';
-import { User } from '../../users/entities/user.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Car } from 'src/cars/entities/car.entity';
+
+
+
+export enum TestDriveStatus {
+  Pending = 'pending',
+  Accepted = 'accepted',
+  Rejected = 'rejected',
+}
 
 @Entity()
 export class TestDrive {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Car)
+  @Column({ type: 'timestamp' })
+  date: Date;
+
+  @Column({ type: 'enum', enum: TestDriveStatus, default: TestDriveStatus.Pending })
+  status: TestDriveStatus;
+
+  @ManyToOne(() => Car, (car) => car.testDrives, { eager: true })
   car: Car;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.testDrives, { eager: true })
   user: User;
-
-  @Column({ default: 'pending' }) // pending | accepted | rejected
-  status: string;
-
-  @CreateDateColumn()
-  requestedAt: Date;
 }

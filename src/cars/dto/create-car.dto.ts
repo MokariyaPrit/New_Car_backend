@@ -1,5 +1,5 @@
 // src/cars/dto/create-car.dto.ts
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateCarDto {
   @IsString()
@@ -10,10 +10,9 @@ export class CreateCarDto {
   @IsNotEmpty()
   brand: string;
 
-  @IsNumber()
-  price: number;
+  @IsString()
+  description: string;
 
   @IsString()
-  @IsNotEmpty()
-  imageUrl: string;
+  imageUrl: string; // Cloudinary image URL
 }
