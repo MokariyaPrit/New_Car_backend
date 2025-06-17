@@ -27,12 +27,12 @@ export class TestDrive {
   @Column({ type: 'timestamp' })
   date: Date;
 
-  @Column({ type: 'enum', enum: TestDriveStatus, default: TestDriveStatus.Pending })
-  status: TestDriveStatus;
-
   @ManyToOne(() => Car, (car) => car.testDrives, { eager: true })
   car: Car;
 
   @ManyToOne(() => User, (user) => user.testDrives, { eager: true })
   user: User;
+
+    @Column({ type: 'enum', enum: TestDriveStatus, default: TestDriveStatus.Pending })
+  status: TestDriveStatus;
 }

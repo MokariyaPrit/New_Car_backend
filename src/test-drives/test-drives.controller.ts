@@ -1,81 +1,48 @@
-// src/test-drive/test-drive.controller.ts
-import { Controller, Post, UseGuards, Body, Req, Patch, Param, Get, Query, ParseIntPipe } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { Roles } from '../common/decorators/roles.decorator';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { TestDriveService } from './test-drives.service';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { TestDrivesService } from './test-drives.service';
 import { CreateTestDriveDto } from './dto/create-test-drive.dto';
+import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/roles.enum';
-import { TestDriveStatus } from './entities/test-drive.entity';
-import { UpdateTestDriveStatusDto } from './dto/update-status.dto';
-import { User } from 'src/users/entities/user.entity';
-import { CurrentUser } from 'src/common/decorators/current-user.decorator';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @Controller('test-drives')
-@UseGuards(JwtAuthGuard, RolesGuard)
-export class TestDriveController {
-  constructor(private readonly testDriveService: TestDriveService) {}
+export class TestDrivesController {
+  constructor(private readonly testDriveService: TestDrivesService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User)
+  @Post()
+  request(@Body() dto: CreateTestDriveDto) {
+    return this.testDriveService.request(dto);
+  }
 
-@UseGuards(JwtAuthGuard)
-@Post()
-requestDrive(@Body() dto: CreateTestDriveDto, @Req() req: any) {
-  return this.testDriveService.requestDrive(dto, req.user);
-}
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @Patch(':id/approve')
+  approve(@Param('id') id: string) {
+    return this.testDriveService.approve(id);
+  }
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(Role.Manager)
-@Patch(':id/status')
-updateStatus(@Param('id') id: string, @Body() dto: UpdateTestDriveStatusDto) {
-  return this.testDriveService.updateStatus(id, dto.status);
-}
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @Patch(':id/reject')
+  reject(@Param('id') id: string) {
+    return this.testDriveService.reject(id);
+  }
 
-@Get()
-@UseGuards(JwtAuthGuard)
-getAll() {
-  return this.testDriveService.findAll();
-}
-
-@UseGuards(JwtAuthGuard)
-@Post()
-create(
-  @Body() dto: CreateTestDriveDto,
-  @CurrentUser() user: User, // Assume `@CurrentUser()` decorator gives logged-in user
-) {
-  return this.testDriveService.create(dto, user);
-}
-
-
-@Post(':carId')
-@UseGuards(AuthGuard, RolesGuard)
-@Roles(Role.User)
-bookTestDrive(
-  @Param('carId', ParseIntPipe) carId: number,
-  @CurrentUser() user: User,
-  @Body() body: { date: string }, // ISO date string
-) {
-  return this.testDriveService.bookTestDrive(carId, user, new Date(body.date));
-}
-
-@Patch(':id/approve')
-@UseGuards(AuthGuard, RolesGuard)
-@Roles(Role.Manager, Role.Admin)
-approveTestDrive(@Param('id', ParseIntPipe) id: number) {
-  return this.testDriveService.updateTestDriveStatus(id, 'accepted');
-}
-
-@Patch(':id/reject')
-@UseGuards(AuthGuard, RolesGuard)
-@Roles(Role.Manager, Role.Admin)
-rejectTestDrive(@Param('id', ParseIntPipe) id: number) {
-  return this.testDriveService.updateTestDriveStatus(id, 'rejected');
-}
-
-@Get()
-@UseGuards(AuthGuard, RolesGuard)
-@Roles(Role.Manager, Role.Admin)
-getAllTestDrives() {
-  return this.testDriveService.getAllTestDrives();
-}
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.SuperAdmin)
+  @Get()
+  findAll() {
+    return this.testDriveService.findAll();
+  }
 }

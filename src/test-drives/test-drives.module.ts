@@ -3,12 +3,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TestDrive } from './entities/test-drive.entity';
 import { Car } from '../cars/entities/car.entity';
-import { TestDriveController } from './test-drives.controller';
-import { TestDriveService } from './test-drives.service';
+import { TestDrivesController } from './test-drives.controller';
+import { TestDrivesService } from './test-drives.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TestDrive, Car])],
-  controllers: [TestDriveController],
-  providers: [TestDriveService],
+  controllers: [TestDrivesController],
+  providers: [TestDrivesService],
 })
 export class TestDriveModule {}
