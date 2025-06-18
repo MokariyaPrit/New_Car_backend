@@ -42,9 +42,8 @@ export class User {
 @OneToMany(() => TestDrive, (td) => td.user) 
 testDrives: TestDrive[];
 
-@OneToMany(() => Car, (car) => car.manager)
+@OneToMany(() => Car, (car) => car.owner)
 cars: Car[];
-
 
 @Column({ nullable: true })
 RefreshToken?: string;

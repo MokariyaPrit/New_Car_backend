@@ -7,32 +7,34 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 
-@Entity()
+@Entity('cars')
 export class Car {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
-  name: string;
+  make: string;
 
   @Column()
-  brand: string;
+  model: string;
 
   @Column()
-  description: string;
+  year: number;
 
   @Column()
-  imageUrl: string;
+  color: string;
 
-  @ManyToOne(() => User, (user) => user.cars)
-  manager: User;
-
+   @ManyToOne(() => User, (user) => user.cars, { eager: true })
+  owner: User;
+  
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
-  testDrives: any;
+
+  @Column({ nullable: true })
+ imageUrl: string;
 }

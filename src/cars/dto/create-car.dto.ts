@@ -1,18 +1,8 @@
-// src/cars/dto/create-car.dto.ts
-import { IsNotEmpty, IsString } from 'class-validator';
-
-export class CreateCarDto {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
-  @IsString()
-  @IsNotEmpty()
-  brand: string;
-
-  @IsString()
-  description: string;
-
-  @IsString()
-  imageUrl: string; // Cloudinary image URL
+// src/cars/dto/car.dto.ts
+export class CarDto {
+  make: string;
+  model: string;
+  year: number;
+  color: string;
+  imageUrl: string;
 }

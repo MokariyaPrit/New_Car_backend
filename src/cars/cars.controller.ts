@@ -1,48 +1,56 @@
+// src/cars/cars.controller.ts
 import {
-  Body,
   Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
   Post,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  Body,
+  Request,
+  Get,
+  Req,
+  Patch,
+  ParseIntPipe,
+  Param,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { CarsService } from './cars.service';
-import { CreateCarDto } from './dto/create-car.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';;
+import { CarDto } from './dto/create-car.dto';
 import { UpdateCarDto } from './dto/update-car.dto';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { Role } from 'src/common/enums/roles.enum';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @Controller('cars')
+@UseGuards(JwtAuthGuard)
 export class CarsController {
   constructor(private readonly carsService: CarsService) {}
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Manager, Role.Admin, Role.SuperAdmin)
   @Post()
-  create(@Body() dto: CreateCarDto) {
-    return this.carsService.create(dto);
+  @UseInterceptors(FileInterceptor('image'))
+  async createCar(
+    @UploadedFile() image: Express.Multer.File,
+    @Body() carDto: CarDto,
+    @Request() req: any,
+  ) {
+    return this.carsService.createCarWithImage(carDto, image, req.user.id);
   }
 
-  @Get()
-  findAll() {
-    return this.carsService.findAll();
+
+   @Get()
+  async getCars(@Req() req) {
+    return this.carsService.findAllCarsForUser(req.user);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Manager, Role.Admin, Role.SuperAdmin)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateCarDto) {
-    return this.carsService.update(id, dto);
+  async updateCar(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateCarDto,
+    @Req() req
+  ) {
+    return this.carsService.updateCar(id, dto, req.user);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.SuperAdmin)
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.carsService.remove(id);
-  }
+  @Get(':id')
+async getCarById(@Param('id') id: string) {
+  return this.carsService.findOneById(id);
+}
 }

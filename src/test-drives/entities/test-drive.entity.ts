@@ -27,8 +27,6 @@ export class TestDrive {
   @Column({ type: 'timestamp' })
   date: Date;
 
-  @ManyToOne(() => Car, (car) => car.testDrives, { eager: true })
-  car: Car;
 
   @ManyToOne(() => User, (user) => user.testDrives, { eager: true })
   user: User;
