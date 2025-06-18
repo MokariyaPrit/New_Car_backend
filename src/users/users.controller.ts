@@ -10,31 +10,29 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // Get current user profile
-  @UseGuards(JwtAuthGuard)
-  @Get('me')
-  getProfile(@CurrentUser() user: User) {
-    return user;
-  }
-
-  // Only SuperAdmin can update other users' roles
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.SuperAdmin)
-  @Patch(':id/role')
-  updateUserRole(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateRoleDto: UpdateRoleDto
-  ) {
-    return this.usersService.updateUserRole(id, updateRoleDto.role);
-  }
-
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@CurrentUser() user: User) {
+  return this.usersService.findById(user.id);
+}
+
+@UseGuards(JwtAuthGuard)
+@Patch('profile')
+updateProfile(
+  @CurrentUser() user: User,
+  @Body() dto: UpdateUserDto
+) {
+  return this.usersService.updateUser(user.id, dto);
+}
 }

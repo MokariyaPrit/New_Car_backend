@@ -39,7 +39,7 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-@OneToMany(() => TestDrive, (td) => td.user)
+@OneToMany(() => TestDrive, (td) => td.user) 
 testDrives: TestDrive[];
 
 @OneToMany(() => Car, (car) => car.manager)
@@ -48,4 +48,7 @@ cars: Car[];
 
 @Column({ nullable: true })
 RefreshToken?: string;
+
+@Column({ nullable: true })
+phone?: number; 
 }
