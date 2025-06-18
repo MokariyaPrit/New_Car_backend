@@ -1,44 +1,45 @@
-// src/super-admins/super-admins.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { UpdateUserDto } from 'src/users/dto/update-user.dto';
-import { Role } from 'src/common/enums/roles.enum';
 
 @Injectable()
 export class SuperAdminsService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private userRepository: Repository<User>,
   ) {}
 
-  async findAllUsers(): Promise<User[]> {
+  // ✅ Get all users
+  async getAllUsers(): Promise<User[]> {
     return this.userRepository.find();
   }
 
-  async findUserById(id: string): Promise<User> {
+  // ✅ Update any user
+  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });
-    if (!user) throw new NotFoundException('User not found');
-    return user;
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    const updated = this.userRepository.merge(user, updateUserDto);
+    return this.userRepository.save(updated);
   }
 
-  async updateUser(id: string, dto: UpdateUserDto): Promise<User> {
-    const user = await this.userRepository.preload({ id, ...dto });
-    if (!user) throw new NotFoundException('User not found');
-    return this.userRepository.save(user);
-  }
-
-  async updateUserRole(id: string, role: Role): Promise<User> {
+  // ✅ Delete any user
+  async deleteUser(id: string): Promise<{ message: string }> {
     const user = await this.userRepository.findOne({ where: { id } });
-    if (!user) throw new NotFoundException('User not found');
-    user.role = role;
-    return this.userRepository.save(user);
-  }
 
-  async deleteUser(id: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
-    if (!user) throw new NotFoundException('User not found');
-    return this.userRepository.remove(user);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    await this.userRepository.remove(user);
+    return { message: `User with ID ${id} deleted successfully.` };
   }
 }

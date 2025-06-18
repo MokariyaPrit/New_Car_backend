@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { CarsModule } from './cars/cars.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { SuperAdminsModule } from './super-admins/super-admins.module';
 @Module({
   providers: [
     {
@@ -17,6 +18,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
   imports: [
     UsersModule,
     CarsModule,
+    SuperAdminsModule,
 
     ConfigModule.forRoot({
       isGlobal: true,
