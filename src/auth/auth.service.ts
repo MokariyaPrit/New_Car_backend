@@ -32,25 +32,24 @@ export class AuthService {
     return result;
   }
 
-  async login(user: any) {
-    if (!user || !user.id) throw new Error('User or ID is undefined');
+async login(user: any) {
+  if (!user || !user.id) throw new Error('User or ID is undefined');
 
-    const accessToken = await this.generateAccessToken(user);
-    const refreshToken = await this.generateRefreshToken(user);
+  const accessToken = await this.generateAccessToken(user);
+  const refreshToken = await this.generateRefreshToken(user);
 
-    // Hash and store refresh token
-    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-    await this.usersService.updateRefreshToken(user.id, hashedRefreshToken);
+  const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+  await this.usersService.updateRefreshToken(user.id, hashedRefreshToken);
 
-    return {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-      user,
-    };
-  }
+  return {
+    access_token: accessToken,
+    refresh_token: refreshToken,
+    user,
+  };
+}
 
   async generateAccessToken(user: any): Promise<string> {
-    const payload = { sub: user.id, email: user.email, role: user.role };
+    const payload = { sub: user.id, email: user.email, role: user.role,region: user.region,  };
     return this.jwtService.sign(payload, {
       secret: this.configService.get<string>('ACCESS_TOKEN_SECRET'),
       expiresIn: this.configService.get<string>('ACCESS_TOKEN_EXPIRY'),

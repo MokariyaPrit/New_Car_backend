@@ -29,7 +29,7 @@ export class UsersController {
 
 @UseGuards(JwtAuthGuard)
 @Patch('profile')
-updateProfile(
+updateProfile( 
   @CurrentUser() user: User,
   @Body() dto: UpdateUserDto
 ) {

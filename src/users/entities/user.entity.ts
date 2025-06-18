@@ -51,4 +51,7 @@ RefreshToken?: string;
 
 @Column({ nullable: true })
 phone?: number; 
+
+  @Column({ nullable: true })
+  region: string;
 }

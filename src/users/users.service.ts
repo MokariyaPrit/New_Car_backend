@@ -25,7 +25,7 @@ async createUser(dto: CreateUserDto): Promise<User> {
 }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email }, select: ['id', 'email', 'password', 'role'], });
+    return this.userRepository.findOne({ where: { email }, select: ['id', 'email', 'password', 'role', 'region', 'RefreshToken'], });
   }
 
   async findById(id: string): Promise<User | null> {

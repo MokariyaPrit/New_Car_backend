@@ -13,8 +13,14 @@ export class CreateUserDto {
   @ApiProperty({ example: 'strongPassword123' })
   password: string;
   
-
+  
   @IsNotEmpty()
   @ApiProperty({ example: 'user' })
-    role: Role;
+  role: Role;
+  
+  @IsString()
+  @ApiProperty({ example: 'Gujrat'})
+  region?: string; // ✅ added
+
+    
 }
