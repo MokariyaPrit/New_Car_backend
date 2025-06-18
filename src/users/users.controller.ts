@@ -1,5 +1,5 @@
 // src/users/users.controller.ts
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -9,12 +9,13 @@ import { UsersService } from './users.service';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
- constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
- // Get current user profile
+  // Get current user profile
   @UseGuards(JwtAuthGuard)
   @Get('me')
   getProfile(@CurrentUser() user: User) {
@@ -31,10 +32,9 @@ export class UsersController {
   ) {
     return this.usersService.updateUserRole(id, updateRoleDto.role);
   }
-// @UseGuards(AuthGuard, RolesGuard)
-// @Roles(Role.SuperAdmin)
-// @Get()
-// findAll() {
-//   return this.usersService.findAllUsers();
-// }
+
+  @Post()
+  async create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.createUser(createUserDto);
+  }
 }

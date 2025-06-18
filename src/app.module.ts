@@ -3,19 +3,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
 import { validationSchema } from './config/validation';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {UsersModule} from './users/users.module'
+import { UsersModule } from './users/users.module';
 import { CarsModule } from './cars/cars.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/guards/roles.guard';
-
 @Module({
-
   providers: [
-  {
-    provide: APP_GUARD,
-    useClass: RolesGuard,
-  },
-],
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
   imports: [
     UsersModule,
     CarsModule,
@@ -35,8 +33,9 @@ import { RolesGuard } from './auth/guards/roles.guard';
         username: configService.get<string>('database.username'),
         password: configService.get<string>('database.password'),
         database: configService.get<string>('database.name'),
-        entities: [], // put your entity classes here
+         entities: [__dirname + '/**/*.entity{.ts,.js}'], // put your entity classes here
         synchronize: true,
+        
       }),
     }),
   ],

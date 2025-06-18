@@ -13,10 +13,13 @@ import { Car } from 'src/cars/entities/car.entity';
 
 export type UserRole = 'user' | 'manager' | 'admin' | 'superadmin';
 
-@Entity()
+@Entity('users')
 export class User { 
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column()
+  name: string;
 
   @Column({ unique: true })
   email: string;
@@ -24,12 +27,11 @@ export class User {
   @Column()
   password: string;
 
-
- @Column({ type: 'enum', enum: Role, default: Role.User })
+  @Column({ 
+    type: 'enum',
+    enum: Role,
+  })
   role: Role;
-
-  @Column({ default: false })
-  isVerified: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -42,4 +44,8 @@ testDrives: TestDrive[];
 
 @OneToMany(() => Car, (car) => car.manager)
 cars: Car[];
+
+
+@Column({ nullable: true })
+RefreshToken?: string;
 }
