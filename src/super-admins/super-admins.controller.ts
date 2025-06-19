@@ -15,13 +15,13 @@ import { User } from 'src/users/entities/user.entity';
 export class SuperAdminsController {
   constructor(private readonly superAdminsService: SuperAdminsService) {}
 
-  // ✅ List all users
+  //   List all users
   @Get('users')
   async getAllUsers(): Promise<User[]> {
     return this.superAdminsService.getAllUsers();
   }
 
-  // ✅ Update any user
+  //   Update any user
   @Patch('users/:id')
   async updateUser(
     @Param('id') id: string,
@@ -30,7 +30,7 @@ export class SuperAdminsController {
     return this.superAdminsService.updateUser(id, updateUserDto);
   }
 
-  // ✅ Delete any user
+  //   Delete any user
   @Delete('users/:id')
   async deleteUser(@Param('id') id: string): Promise<{ message: string }> {
     return this.superAdminsService.deleteUser(id);

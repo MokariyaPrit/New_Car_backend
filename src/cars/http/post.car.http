@@ -1,0 +1,6 @@
+PATCH http://localhost:3000/cars/a0f8a689-b173-46b6-a6ed-9ed8d7da1f1d
+Content-Type:application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMmI3YzVjZi1hMmVkLTRkYmItYWIwMS01NTVmODU1MmZkY2UiLCJlbWFpbCI6Im1hbmFnZXIxQGdtYWlsLmNvbSIsInJvbGUiOiJtYW5hZ2VyIiwicmVnaW9uIjoiR3VqYXJhdCIsImlhdCI6MTc1MDMyODE3NiwiZXhwIjoxNzUwMzI5MDc2fQ.s_G3mugBJqqFz_1VbslL4tYHX5ofwl4BvfYUJr1WXpU
+{
+    "Brand":"Test"
+}

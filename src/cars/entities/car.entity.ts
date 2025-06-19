@@ -15,7 +15,8 @@ export class Car {
   id: string;
 
   @Column()
-  make: string;
+  Brand: string; // Brand like "Jaguar Golf"
+
 
   @Column()
   model: string;
@@ -26,15 +27,33 @@ export class Car {
   @Column()
   color: string;
 
-   @ManyToOne(() => User, (user) => user.cars, { eager: true })
+  @Column({ unique: true })
+  Number: string; // Car number like FN61XTE
+
+  @Column()
+  type: string; // Like Coupe, SUV, Sedan
+
+  @Column()
+  transmission: string; // Automatic / Manual
+
+  @Column()
+  fuelType: string; // Petrol / Diesel / Hybrid
+
+  @Column()
+  mileage: number; // e.g., 87
+
+  @Column('decimal', { precision: 10, scale: 2 })
+  price: number; // e.g., 66094.00
+
+  @Column({ nullable: true })
+  imageUrl: string;
+
+  @ManyToOne(() => User, (user) => user.cars, { eager: true })
   owner: User;
-  
+
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @Column({ nullable: true })
- imageUrl: string;
 }

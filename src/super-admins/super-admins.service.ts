@@ -14,12 +14,12 @@ export class SuperAdminsService {
     private userRepository: Repository<User>,
   ) {}
 
-  // ✅ Get all users
+  //   Get all users
   async getAllUsers(): Promise<User[]> {
     return this.userRepository.find();
   }
 
-  // ✅ Update any user
+  //   Update any user
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });
 
@@ -31,7 +31,7 @@ export class SuperAdminsService {
     return this.userRepository.save(updated);
   }
 
-  // ✅ Delete any user
+  //   Delete any user
   async deleteUser(id: string): Promise<{ message: string }> {
     const user = await this.userRepository.findOne({ where: { id } });
 

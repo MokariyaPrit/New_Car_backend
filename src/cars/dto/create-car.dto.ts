@@ -5,4 +5,5 @@ export class CarDto {
   year: number;
   color: string;
   imageUrl: string;
+  ownerId:string
 }
